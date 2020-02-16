@@ -1,3 +1,6 @@
+## ManageMent System
+고객관리를 위한 프로젝트 입니다.
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
