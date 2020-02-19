@@ -133,7 +133,9 @@ class App extends Component {
   }
 
 
+  
   componentDidMount() {
+    //component로드 완료후 호출됨
     this.timer =setInterval(this.progress, 20);
     
     this.callApi()
