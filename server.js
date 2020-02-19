@@ -1,55 +1,66 @@
+const fs=require('fs');
+
 const express=require('./node_modules/express');
 const bodyParser=require('body-parser');
 const app=express();
 const port=process.env.port|| 5000;
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded(  {extended:true}));
- 
-app.get("/api/hello", (req, res) => {
-    res.send({message:'hello express!'});
+
+const data=fs.readFileSync('./database.json');
+const conf=JSON.parse(data);
+const mysql=require('mysql');
+
+const connection =mysql.createConnection({
+host:conf.host,
+user: conf.user,
+password: conf.password,
+port:conf.port,
+database:conf.database
 });
+connection.connect();
+
+// app.get("/api/hello", (req, res) => {
+//     res.send({message:'hello express!'});
+// });
+
+const multer=require('multer');
+const upload =multer({dest:'./upload'}); 
 
 app.get("/api/customers", (req, res) => {
-    res.send(
-        [
-            {
-            'id': 1, 
-            'image': 'https://placeimg.com/64/64/1',
-            'name':'1 hong',
-            'birthday':'78500',
-            'gender': 'manman',
-            'job':'programmer'
-          },
-          {
-            'id': 2, 
-            'image': 'https://placeimg.com/64/64/2',
-            'name':'2hong',
-            'birthday':'78500',
-            'gender': 'manman',
-            'job':'programmer'
-          }
-          ,{
-            'id': 3, 
-            'image': 'https://placeimg.com/64/64/3',
-            'name':'3hong',
-            'birthday':'78500',
-            'gender': 'manman',
-            'job':'programmer'
-          }
-          ,{
-            'id': 4, 
-            'image': 'https://placeimg.com/64/64/4',
-            'name':'4hong',
-            'birthday':'78500',
-            'gender': 'manman',
-            'job':'programmer'
-          }
-          ]
-
-
-    );
+   connection.query(
+"select * from CUSTOMER", 
+(err, rows, fields) => {
+  res.send(rows);
+  // console.log(err);
+  }
+   );
 });
 
+app.use('/image',express.static('./upload'));
+app.post('/api/customers', upload.single('image'), (req,res)=>{
+console.log("call post api/customers");
+
+  let sql='INSERT INTO CUSTOMER VALUES (null, ?,?,?,?,?)';
+let image= '/image/' +req.file.filename;
+let name= req.body.name;
+let birthday=req.body.birthday;
+let gender=req.body.gender;
+let job=req.body.job;
+let params =[image,name,birthday,gender,job];
+ console.log(image);
+ console.log(name);
+
+
+connection.query(sql, params, 
+(err, rows,fields) => {
+  res.send(rows); 
+  console.log("================");
+  console.log(rows);
+console.log(err);
+});
+
+});
 
 
 app.listen(port, () =>console.log( 'listen on port ${port}' ));

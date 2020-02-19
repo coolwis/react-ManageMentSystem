@@ -3,6 +3,8 @@ import React, {Component} from 'react';
 import './App.css';
 
 import Customer from './components/Customer'
+import CustomerAdd from './components/CustomerAdd';
+
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
 import TableHead from '@material-ui/core/TableHead';
@@ -15,57 +17,40 @@ import {withStyles} from '@material-ui/core/styles';
 const styles = theme =>({
   root:{
     width:'100%',
-    marginTop:theme.spacing.unit *3,
+    // marginTop:theme.spacing.unit *3,
     overflowX:"auto"
   }, 
   table: {
     minWidth:1080 
   }, 
   progress : {
-    margin: theme.spacing.unit * 2
+    margin:theme.spacing(3)
   }
 })
 
-// const customers =[
-//   { 
-//   'id': 1, 
-//   'image': 'https://placeimg.com/64/64/1',
-//   'name':'1 hong',
-//   'birthday':'78500',
-//   'gender': 'manman',
-//   'job':'programmer'
-// },
-// {
-//   'id': 2, 
-//   'image': 'https://placeimg.com/64/64/2',
-//   'name':'2hong',
-//   'birthday':'78500',
-//   'gender': 'manman',
-//   'job':'programmer'
-// }
-// ,{
-//   'id': 3, 
-//   'image': 'https://placeimg.com/64/64/3',
-//   'name':'3hong',
-//   'birthday':'78500',
-//   'gender': 'manman',
-//   'job':'programmer'
-// }
-// ,{
-//   'id': 4, 
-//   'image': 'https://placeimg.com/64/64/4',
-//   'name':'4hong',
-//   'birthday':'78500',
-//   'gender': 'manman',
-//   'job':'programmer'
-// }
-// ]
 class App extends Component {
 
-  state ={
-    customers :"", 
-    completed: 0
+  
+  constructor(props){
+    super(props);
+    this.state ={
+      customers:'',
+      completed:0
+    }
   }
+
+  stateRefresh=() =>{
+    this.setState ({
+      customers:'',
+      completed:0
+    });
+
+    this.callApi()
+    .then(res=> this.setState({customers:res}))
+    .catch(err => console.log(err));
+  }
+
+
   componentDidMount() {
     this.timer =setInterval(this.progress, 20);
     
@@ -94,6 +79,7 @@ progress = () => {
 
     const {classes} =this.props;
     return (
+      <div>
       <Paper className={classes.root}>
         <Table className={classes.table}>
           <TableHead>
@@ -101,6 +87,8 @@ progress = () => {
             <TableCell>number</TableCell>
             <TableCell>image</TableCell>
             <TableCell>name</TableCell>
+            <TableCell>birthday</TableCell>
+            <TableCell>gender</TableCell>
             <TableCell>job</TableCell>
             </TableRow>
           </TableHead>
@@ -133,6 +121,13 @@ progress = () => {
           </TableBody>
         </Table>   
       </Paper>
+
+      {/* 등록폼 */}
+      <CustomerAdd stateRefresh={this.stateRefresh} />
+      </div>
+
+                
+
     )   
   }
 }
