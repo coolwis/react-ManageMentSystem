@@ -38,9 +38,10 @@ const styles = theme =>({
   }, 
   menu: {
     marginTop:15,
+    marginLeft:15,
     marginBottom: 15,
     display:'flex',
-    justifyContent:'center'
+    justifyContent:'right'
   },
   pager:{
     marginLeft:18,
@@ -212,12 +213,13 @@ return <Customer stateRefresh={this.state.stateRefresh} key={c.id} id={c.id} ima
 
             />
           </div>
+          <div className={classes.menu}>
+            {/* 등록폼 */}
+            <CustomerAdd stateRefresh={this.stateRefresh} />
+          </div>
         </Toolbar>
       </AppBar>
-      <div className={classes.menu}>
-        {/* 등록폼 */}
-        <CustomerAdd stateRefresh={this.stateRefresh} />
-      </div>
+    
       <Paper className={classes.paper}>
         <Table className={classes.table}>
           <TableHead>
